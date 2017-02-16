@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>居中总结</title>
+	<style>
+		.container{
+			width: 980px;
+			margin:0 auto;
+
+		}
+		.farther{
+			width: 200px;
+			height: 200px;
+			background-color: lime;
+		}
+		.son{
+			width: 100px;
+			height: 100px;
+			background-color: pink;
+			
+		}
+		.fl{
+			float: left;
+			margin-left: 250px;
+		}
+		.block,.inline-block{
+			margin: 20px;
+			border: 1px solid #ccc;
+			padding-left: 10px;
+			padding-bottom: 10px;
+		}
+		.sample{
+			position: relative;
+			padding-bottom: 10px;
+			border-bottom:1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<header>
+		<h3>居中，这里讨论的是子元素在父元素中水平方向和竖直方向上都居中</h3>
+		<p>那么其中的隐藏含义有：</p>
+		<ul>
+			<li>父元素高宽确定</li>
+			<li>子元素的类型可以为：
+				<ul>
+					<li>块级元素,宽高确定</li>
+					<li>行内元素，宽高不确定，一行或者多行</li>
+				</ul>
+			</li>
+		</ul>
+		</header>	
+		<!-- 子元素是块级元素 -->
+		<div class="analysis">
+			<p><b>分析：</b></p>
+				<p>居中问题是属于布局问题，影响文档布局的首要的是
+					<strong>尺寸问题</strong>，第二就是元素之间的<strong>相当位置</strong>，
+					第三就是<strong>文档流问题</strong>，
+					第四就是<strong>特殊盒模型</strong>
+				</p>
+		</div>
+		<hr>
+		<div class="block">
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定</h3>
+				<p>思路一：直接利用<strong>margin</strong>解决相对位置问题</p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>计算子元素的margin-top或margin-bottom，计算方法为(父元素高度-子元素高度)/2</p>
+					<p>或者计算父元素的padding-top或padding-bottom，计算方法为(父元素高度-子元素高度)/2
+					</p>
+					<p>这里使用的是margin(需要解决margin的塌陷现象，另外设置了父元素overflow:hidden)</p>
+				</div>
+				<div class="farther" style='overflow:hidden;'>
+					<div class="son" style="margin-top:50px;margin-left:50px;"></div>
+				</div>
+			</div>
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定</h3>
+				<p>思路二：利用子元素的位移，<strong>c3 transform</strong>属性来达到居中</p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>设置子元素：transform: translate(50px,50px);</p>
+				</div>
+				<div class="farther">
+					<div class="son" style="transform: translate(50px,50px);"></div>
+				</div>
+			</div>
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定</h3>
+				<p>思路三：利用<strong>文档流</strong>来解决，子绝父相</p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>父元素的设置：position:relative;</p>
+					<p>子元素的设置：position:absolute;left:50%;top:50%;margin-left:-50px;margin-top:-50px</p>
+					<p><strong>注</strong>：子元素的定位与内外边距设置的百分数都以父元素为基数。
+					此处的margin-left或margin-top都可设置相应的transform属性。</p>
+				</div>
+				<div class="farther" style="position:relative;">
+					<div class="son" style="position:absolute;left:50%;top:50%;margin-left:-50px;margin-top:-50px"></div>
+				</div>
+			</div>
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定</h3>
+				<p>思路四：利用<strong>文档流</strong>来解决，子绝父相</p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>父元素的设置：position:relative;</p>
+					<p>子元素的设置：position:absolute; margin:auto;top: 0; left: 0; bottom: 0; right: 0;</p>
+					<p><strong>注</strong>：top: 0; left: 0; bottom: 0; right: 0;会将子盒子的边框拉伸到填满父盒子(最近的一个position:relative的父盒子，如果没有，则是body)，此时的margin：autuo属性会平均分配。(W3C中写道If 'margin-top', or'margin-bottom' are 'auto', their used value is 0)
+					</p>
+				</div>
+				<div class="farther" style="position:relative;">
+					<div class="son" style="position:absolute; margin:auto;top: 0; left: 0; bottom: 0; right: 0; "></div>
+				</div>
+			</div>
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定或者不确定</h3>
+				<p>思路五：特殊盒子模型居中，此方法也可处理高度可变的居中，<strong>表格单元格</strong></p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>需要在父盒子与子盒子之间添加一个新的盒子，由外向内依次设置：display: table;|display: table-cell;  vertical-align: middle; width: 50%;| margin: 0 auto;  </p>
+				</div>
+				<div class="farther" style="display: table;">
+					<div class="middle" style="display: table-cell; vertical-align: middle; ">
+						<div class="son" style="width: 50%;margin: 0 auto;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="sample">
+				<h3>块级子元素在父元素中居中，宽高确定</h3>
+				<p>思路六：特殊盒子模型，<strong>设置弹性盒子</strong>来达到居中</p>
+				<div class="desc fl" style="position:absolute;left:250px;margin:0;">
+					<p>设置父元素：display:flex;justify-content: center;align-items: center;</p>
+				</div>
+				<div class="farther" style="display:flex;justify-content: center;align-items: center;">
+					<div class="son"></div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="inline-block">
+			<div class="sample">
+				<h3>行内子元素在父元素中居中，其宽高是由其内容撑开的</h3>
+				
+				<div class="desc fl">
+					<p>水平方向：text-align: center;</p>
+					<p>竖直方向：vertical-align: middle</p>
+				</div>
+				<div class="farther" style="text-align: center;">
+					<div class="son1" style="display:inline-block;vertical-align: top;background:green;">必须来点文字</div>
+				</div>
+			</div>
+		</div>
+		<footer style="margin-bottom:80px;">
+			<p><strong>总结：</strong>任何事物的分类都是为了更好的了解事物。对于布局而言，盒子是基础的，子盒子在父盒子内部渲染，必须遵循父盒子内部的渲染机制，盒子pisplay有block,inline-block,table,table-cell,flex,而这些都可以用来解决子盒子的居中问题。而脱离文档流，只显示相对位置来解决居中，也是可以的。
+			</p>
+		</footer>
+	</div>
+
+</body>
+</html>
