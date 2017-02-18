@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>局部刷新之ajax与jsonp</title>
+	<style>
+		header{
+			height: 300px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-image: linear-gradient(90deg,#ccc,#cf4646,#cf4646,#ccc);
+		}
+	</style>
+</head>
+<body bgcolor="#ccc" style="margin:0">
+	<header>
+		<h1><strong>
+			ajax与jsonp毫无关系，只是jquery将这两种技术都封装到$.ajax这一个函数中了。
+		</strong></h1>
+	</header>
+	<table border="1" cellspacing="0" align="center" cellpadding="10">
+		<caption>
+			局部刷新之ajax与jsonp
+		</caption>
+		<tbody>
+			<tr>
+			<th></th><th>AJAX</th><th>JSONP</th>
+		</tr>
+		<tr>
+			<td>发送请求的方式</td><td>GET/POST</td><td>GET</td>
+		</tr>
+		<tr>
+			<td>返回数据</td><td><strong>data</strong>&nbsp;json格式的字符串</td><td><strong>fn(data)</strong>&nbsp;函数的回调+json格式的字符串(函数的回调，实质就是js代码)</td>
+		</tr>
+		<tr>
+			<td>缺点</td><td>同源安全策略，不能跨域</td><td>能够跨域</td>
+		</tr>
+		<tr>
+			<td>同步/异步</td><td>异步</td><td>异步(注意:静态的script标签src属性是同步的，动态创建的是异步)</td>
+		</tr>
+		<tr>
+			<td>相同点</td><td>---+++---</td><td>都是局部刷新页面
+		</td>
+		</tr>
+		<tr>
+			<td>依托对象</td><td>XHRhttpRequset</td><td>script</td>
+		</tr>
+		<tr>
+			<td>名字由来</td><td>Asynchronous JavaScript and XM</td><td>将json数据当作参数给函数，json with padding</td>
+		</tr>
+		</tbody>
+	</table>
+</body>
+</html>
