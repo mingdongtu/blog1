@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>无限加载的实现</title>
+    <style>
+      body{
+        background-color: #ccc;
+      }
+      #container {
+
+        width: 68%;
+        margin: 20px auto;
+      }
+
+      #textarea {
+        width: 100%;
+        height: 900px;
+        padding: 20px;
+      }
+
+
+    </style>
+</head>
+
+<body>
+    <div id='container'>
+        <h3>实现需求</h3>
+        <div>
+            <p style='text-indent: 2em'>在一个容器之中展现数据，通过scroll或者touchend事件，不断请求数据，并且不断渲染到dom之上。为方便实现，直接使用jquery来讲解，实际工作之中随意切换，可代码如下</p>
+        </div>
+        <textarea id='textarea' >
+             1.0无限加载的实现 
+                实现的思路，在一个盒子中，其内容部分是可以不断向后台请求，这样内容部分会不断增加 // 绑定的事件常为scroll 在移动端可以为touchend
+            <template>
+                <div id='scroll_view'>
+                    <ul>
+                        <li>加载的数据</li>
+                    </ul>
+                </div>
+            </template>
+            <script>
+            var flag = true
+                // 因为请求是异步，当达到请求要求的时候，会要求多次发生请求
+                // 此时 必须请请求的发送改为同步的，此处可以设置ajax同步请求达到目的
+                // 也可以设置节流阀达到目的，此处采用的是节流阀
+            $('#scroll_view').on('scroll touched', function() {
+                if (!flag) return
+                flag = false //关闭节流阀，默认为开的
+                    // 每一次事件的触发都必须获取dom的数据，以便每次依据的数据都是最新的
+                    // 此处在加载的过程之中，不断增加的是li标签的个数与内容，那么其撑开的高度的父盒子就是ul
+                    // 那么ul的遮罩层就必须是div，且高度是固定的，并设置属性overflow:hidden,因为需要一个盒子来统一给管理li
+                    // 一般情况下是需要设置overflow:hidden,这个是在固定视口之中的，当然高度可变的时候就不需要设置该属性了
+                    // 高度可变常见的需求是在首页，内容无线加载的
+                    // 
+                    // scroll属性，只有当内容的高度大于容器的高度之后，onscroll事件的绑定才会生效
+
+                /**
+                 *v_h 遮罩层的高度
+                 *s_t 内容被卷曲的高度
+                 *s_h 内容的高度
+                 *to_bottom 内容滑到里遮罩层底部的高度
+                 *str
+                 */
+
+                var v_h = $('#scroll>ul').height(),
+                    s_t = $('#scroll>ul').scrollTop(),
+                    s_h = $('#scroll').height(),
+                    to_bottom = s_h - s_t - v_h;
+
+                var str = '';
+                $.ajax({
+                    beforeSend: function() {},
+                    success: function(data) {
+                        // 打开节流阀
+                        flag = true
+
+                        // 遍历数据生成dom-html 
+                        for (var i = 0, len = data.data.length; i < len; i++) {
+                            str += data.data[str]
+                        }
+
+                        // 追加数据到节点容器
+
+                        $('#scroll_view >ul').append(str)
+                    }
+                })
+            })
+            </script>
+        </textarea>
+    </div>
+</body>
+
+</html>
